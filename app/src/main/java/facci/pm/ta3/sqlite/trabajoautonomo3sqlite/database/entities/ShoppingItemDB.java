@@ -1,7 +1,9 @@
 package facci.pm.ta3.sqlite.trabajoautonomo3sqlite.database.entities;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import facci.pm.ta3.sqlite.trabajoautonomo3sqlite.database.helper.ShoppingElementHelper;
 import facci.pm.ta3.sqlite.trabajoautonomo3sqlite.database.model.ShoppingItem;
@@ -24,6 +26,7 @@ public class ShoppingItemDB {
         public static final String TABLE_NAME = "entry";
         public static final String COLUMN_NAME_TITLE = "title";
 
+
         public static final String CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
@@ -35,6 +38,11 @@ public class ShoppingItemDB {
 
     public void insertElement(String productName) {
         //TODO: Todo el código necesario para INSERTAR un Item a la Base de datos
+        SQLiteDatabase base = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ShoppingElementEntry.COLUMN_NAME_TITLE, productName);
+        base.insert(ShoppingElementEntry.TABLE_NAME, ShoppingElementEntry.COLUMN_NAME_TITLE, values);
+        base.close();
     }
 
 
@@ -79,15 +87,28 @@ public class ShoppingItemDB {
 
     public void clearAllItems() {
         //TODO: Todo el código necesario para ELIMINAR todos los Items de la Base de datos
+        SQLiteDatabase base = dbHelper.getWritableDatabase();
+        base.delete(ShoppingElementEntry.TABLE_NAME,"",null);
+        base.close();
 
     }
 
     public void updateItem(ShoppingItem shoppingItem) {
         //TODO: Todo el código necesario para ACTUALIZAR un Item en la Base de datos
-
+        SQLiteDatabase base = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ShoppingElementEntry.COLUMN_NAME_TITLE, shoppingItem.getName());
+        base.update(ShoppingElementEntry.TABLE_NAME,values,
+                ShoppingElementEntry._ID + " = "+ shoppingItem.getId(),null);
+        base.close();
     }
 
     public void deleteItem(ShoppingItem shoppingItem) {
         //TODO: Todo el código necesario para ELIMINAR un Item de la Base de datos
+        SQLiteDatabase base = dbHelper.getWritableDatabase();
+        String strFilter =  ShoppingElementEntry._ID + " = "+ shoppingItem.getId();
+        base.delete(ShoppingElementEntry.TABLE_NAME, strFilter,null);
+        base.close();
+
     }
 }
